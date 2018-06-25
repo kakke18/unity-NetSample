@@ -12,7 +12,7 @@ public class NetConnector : MonoBehaviour {
 		string hostname = Dns.GetHostName();
 
 		IPAddress[] adrList = Dns.GetHostAddresses(hostname);
-		foreach (IPAddress address in adrList) {
+		foreach (IPAdress address in adrList) {
 			myIP = address.ToString();
 			servIP= myIP;
 		}
