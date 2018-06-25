@@ -32,9 +32,18 @@ public class NetConnector : MonoBehaviour {
 			servIP = GUI.TextField(new Rect(10, 50, 200, 30), servIP);
 
 			if (GUI.Button(new Rect(10, 80, 200, 30), "上のゲームサーバーに接続")) {
-
+				if (Network.InitializeServer(20, 25000, false) == NetworkConnectionError.NoError) {
+					procConnect();
+				}
+				else {
+					Debug.Log("ゲームサーバー初期化エラー");
+				}
 			}
 		}
 
+	}
+
+	private void procConnect() {
+		isConnected = true;
 	}
 }

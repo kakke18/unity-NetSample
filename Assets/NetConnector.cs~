@@ -12,7 +12,7 @@ public class NetConnector : MonoBehaviour {
 		string hostname = Dns.GetHostName();
 
 		IPAddress[] adrList = Dns.GetHostAddresses(hostname);
-		foreach (IPAdress address in adrList) {
+		foreach (IPAddress address in adrList) {
 			myIP = address.ToString();
 			servIP= myIP;
 		}
@@ -32,9 +32,19 @@ public class NetConnector : MonoBehaviour {
 			servIP = GUI.TextField(new Rect(10, 50, 200, 30), servIP);
 
 			if (GUI.Button(new Rect(10, 80, 200, 30), "上のゲームサーバーに接続")) {
-
+				if (Network.InitializeServer(20, 25000, false) == NetworkConnectionError.NoError) {
+					procConnect();
+				}
+				else {
+					Debug.Log("ゲームサーバー初期化エラー");
+				}
 			}
 		}
 
+	}
+
+	private void procConnect() {
+		isConnected = true;
+		Debug.Log("success");
 	}
 }
