@@ -45,6 +45,5 @@ public class NetConnector : MonoBehaviour {
 
 	private void procConnect() {
 		isConnected = true;
-		Debug.Log("success");
 	}
 }

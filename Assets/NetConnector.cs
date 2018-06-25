@@ -26,7 +26,12 @@ public class NetConnector : MonoBehaviour {
 	void OnGUI () {
 		if (!isConnected) {
 			if (GUI.Button(new Rect(10, 10, 200, 30), "ゲームサーバーになる")) {
-
+				if (Network.Connect(servIP, 25000) == NetworkConnectionError.NoError) {
+					procConnect();
+				}
+				else {
+					Debug.Log("接続エラー");
+				}
 			}
 
 			servIP = GUI.TextField(new Rect(10, 50, 200, 30), servIP);
