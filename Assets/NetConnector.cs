@@ -6,6 +6,7 @@ public class NetConnector : MonoBehaviour {
 	private string myIP = "";
 	private string servIP = "";
 	private bool isConnected = false;
+	public string  textField = "";
 
 	// Use this for initialization
 	void Start () {
@@ -45,7 +46,18 @@ public class NetConnector : MonoBehaviour {
 				}
 			}
 		}
+		else {
+			textField = GUI.TextField(new Rect(10, 30, 200, 30), textField);
 
+			if (GUI.Button(new Rect(10, 70, 200, 30), "送信")) {
+				if(textField != "") {
+					Debug.Log(textField);
+				}
+				else{
+					Debug.Log("No");
+				}
+			}
+		}
 	}
 
 	private void procConnect() {
