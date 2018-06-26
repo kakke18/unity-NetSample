@@ -35,6 +35,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-Assets/Script/*~
-Assets/Script/*.meta
+Assets/*~
+Assets/*.meta
 Execlution/*
