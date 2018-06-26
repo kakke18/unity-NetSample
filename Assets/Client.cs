@@ -5,11 +5,14 @@ using System.Net.Sockets;
 using System.Text;
 
 public class Client : MonoBehaviour {
+	//Global variable
+	TcpClient tcp;
+	bool connectFlag = false;
+	string text = "";
+
 	// Use this for initialization
 	void Start () {
-		string ipOrHost = "localhost";
-		int port = 10000;
-
+		/*
 		//Create TcpClient and connect server
 		TcpClient tcp = new TcpClient(ipOrHost, port);
 
@@ -50,10 +53,43 @@ public class Client : MonoBehaviour {
 		ns.Close();
 		tcp.Close();
 		Debug.Log("切断しました");
+		*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	void OnGUI () {
+		if (!connectFlag) {
+			if (GUI.Button(new Rect(10, 30, 200, 30), "接続")) {
+				Connect();
+			}
+		}
+		else {
+			if (GUI.Button(new Rect(10, 30, 200, 30), "切断")) {
+				Disconnect();
+			}
+
+			text = GUI.TextField(new Rect(10, 70, 200, 30), text);
+			
+			if (GUI.Button(new Rect(10, 110, 200, 30), "送信")) {
+				Debug.Log(text);
+			}
+		}
+	}
+
+	void Connect () {
+		string ipOrHost = "localhost";
+		int port = 10000;
+		connectFlag = true;
+		//Create TcpClient and connect server
+		tcp = new TcpClient(ipOrHost, port);
+	}
+
+	void Disconnect () {
+		connectFlag = false;
+		tcp.Close();
 	}
 }

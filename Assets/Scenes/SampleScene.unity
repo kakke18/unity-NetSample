@@ -259,7 +259,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1318197788}
-  - component: {fileID: 1318197787}
   - component: {fileID: 1318197789}
   m_Layer: 0
   m_Name: SimpleNet
@@ -268,18 +267,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1318197787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1318197786}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c9ea9f10bf56e945b99d0db4d51f283, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textField: 
 --- !u!4 &1318197788
 Transform:
   m_ObjectHideFlags: 0
