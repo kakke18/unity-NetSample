@@ -3,13 +3,18 @@ using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.IO;
 
 public class Client : MonoBehaviour {
 	//Global variable
 	TcpClient tcp;
 	NetworkStream ns;
+	MemoryStream ms = new MemoryStream();
+	byte[] resBytes = new byte[256];
+	int resSize = 0;
 	Encoding enc = Encoding.UTF8;
 	bool connectFlag = false;
+	bool receiveFlag = false;
 	string text = "";
 
 	// Use this for initialization
@@ -20,7 +25,7 @@ public class Client : MonoBehaviour {
 		ns.WriteTimeout = 10000;
 
 		//Receive message
-		System.IO.MemoryStream ms = new System.IO.MemoryStream();
+		ms = MemoryStream();
 		byte[] resBytes = new byte[256];
 		int resSize = 0;
 		do {
@@ -42,7 +47,30 @@ public class Client : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (connectFlag) {
+			//Receive message
+			while (ns.DataAvailable) {
+				resSize = ns.Read(resBytes, 0, resBytes.Length);
+				if (resSize == 0) {
+					Debug.Log("サーバが切断しました");
+					break;
+				}
+				ms.Write(resBytes, 0, resSize);
 
+				if (resBytes[resSize - 1] == '\n') {
+					receiveFlag = true;
+					break;
+				}
+			}
+			if (receiveFlag) {
+				//Covert the received data to a character string
+				string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+				ms.Close();
+				//Delete '\n'
+				resMsg = resMsg.TrimEnd('\n');
+				Debug.Log("receive:" + resMsg);
+			}
+		}
 	}
 
 	void OnGUI () {
