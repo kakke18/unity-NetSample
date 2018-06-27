@@ -9,9 +9,7 @@ public class Client : MonoBehaviour {
 	//Global variable
 	TcpClient tcp;
 	NetworkStream ns;
-	MemoryStream ms = new MemoryStream();
-	byte[] resBytes = new byte[256];
-	int resSize = 0;
+	MemoryStream ms;
 	Encoding enc = Encoding.UTF8;
 	bool connectFlag = false;
 	bool receiveFlag = false;
@@ -23,54 +21,12 @@ public class Client : MonoBehaviour {
 		//Set timeout
 		ns.ReadTimeout = 10000;
 		ns.WriteTimeout = 10000;
-
-		//Receive message
-		ms = MemoryStream();
-		byte[] resBytes = new byte[256];
-		int resSize = 0;
-		do {
-			resSize = ns.Read(resBytes, 0, resBytes.Length);
-			if (resSize == 0) {
-				Debug.Log("サーバが切断しました");
-				break;
-			}
-			ms.Write(resBytes, 0, resSize);
-		} while (ns.DataAvailable || resBytes[resSize - 1] != '\n');
-		//Covert the received data to a character string
-		string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-		ms.Close();
-		//Delete '\n'
-		resMsg = resMsg.TrimEnd('\n');
-		Debug.Log(resMsg);
 		*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (connectFlag) {
-			//Receive message
-			while (ns.DataAvailable) {
-				resSize = ns.Read(resBytes, 0, resBytes.Length);
-				if (resSize == 0) {
-					Debug.Log("サーバが切断しました");
-					break;
-				}
-				ms.Write(resBytes, 0, resSize);
-
-				if (resBytes[resSize - 1] == '\n') {
-					receiveFlag = true;
-					break;
-				}
-			}
-			if (receiveFlag) {
-				//Covert the received data to a character string
-				string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-				ms.Close();
-				//Delete '\n'
-				resMsg = resMsg.TrimEnd('\n');
-				Debug.Log("receive:" + resMsg);
-			}
-		}
+		receiveMessage();
 	}
 
 	void OnGUI () {
@@ -115,5 +71,39 @@ public class Client : MonoBehaviour {
 		byte[] sendBytes = enc.GetBytes(msg + '\n');
 		ns.Write(sendBytes, 0, sendBytes.Length);
 		Debug.Log("send:" + msg);	
+	}
+
+	void receiveMessage () {
+		byte[] resBytes = new byte[256];
+		int resSize = 0;
+
+		if (connectFlag) {
+			//Receive message
+			while (ns.DataAvailable) {
+				ms = new MemoryStream();
+				resSize = ns.Read(resBytes, 0, resBytes.Length);
+
+				if (resSize == 0) {
+					Debug.Log("サーバが切断しました");
+					break;
+				}
+
+				ms.Write(resBytes, 0, resSize);
+
+				if (resBytes[resSize - 1] == '\n') {
+					receiveFlag = true;
+					break;
+				}
+			}
+			if (receiveFlag) {
+				//Covert the received data to a character string
+				string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+				ms.Close();
+				//Delete '\n'
+				resMsg = resMsg.TrimEnd('\n');
+				Debug.Log("receive:" + resMsg);
+				receiveFlag = false;
+			}
+		}
 	}
 }
