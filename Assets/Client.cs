@@ -14,6 +14,7 @@ public class Client : MonoBehaviour {
 	bool connectFlag = false;
 	bool receiveFlag = false;
 	string text = "";
+	string recMsg = "";
 
 	// Use this for initialization
 	void Start () {
@@ -30,6 +31,12 @@ public class Client : MonoBehaviour {
 	}
 
 	void OnGUI () {
+		//Set label style
+		GUIStyle labelStyle = new GUIStyle();
+		GUIStyleState styleState = new GUIStyleState();
+		styleState.textColor = Color.black;
+		labelStyle.normal = styleState;
+
 		if (!connectFlag) {
 			if (GUI.Button(new Rect(10, 30, 200, 30), "接続")) {
 				connectServer();
@@ -45,6 +52,10 @@ public class Client : MonoBehaviour {
 			if (GUI.Button(new Rect(10, 110, 200, 30), "送信") && text != "") {
 				sendMessage(text);
 			}
+		}
+
+		if (recMsg != "") {
+			GUI.Label(new Rect(10, 150, 200, 30), recMsg, labelStyle);
 		}
 	}
 
@@ -74,34 +85,34 @@ public class Client : MonoBehaviour {
 	}
 
 	void receiveMessage () {
-		byte[] resBytes = new byte[256];
-		int resSize = 0;
+		byte[] recBytes = new byte[256];
+		int recSize = 0;
 
 		if (connectFlag) {
 			//Receive message
 			while (ns.DataAvailable) {
 				ms = new MemoryStream();
-				resSize = ns.Read(resBytes, 0, resBytes.Length);
+				recSize = ns.Read(recBytes, 0, recBytes.Length);
 
-				if (resSize == 0) {
+				if (recSize == 0) {
 					Debug.Log("サーバが切断しました");
 					break;
 				}
 
-				ms.Write(resBytes, 0, resSize);
+				ms.Write(recBytes, 0, recSize);
 
-				if (resBytes[resSize - 1] == '\n') {
+				if (recBytes[recSize - 1] == '\n') {
 					receiveFlag = true;
 					break;
 				}
 			}
 			if (receiveFlag) {
 				//Covert the received data to a character string
-				string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+				recMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
 				ms.Close();
 				//Delete '\n'
-				resMsg = resMsg.TrimEnd('\n');
-				Debug.Log("receive:" + resMsg);
+				recMsg = recMsg.TrimEnd('\n');
+				Debug.Log("receive:" + recMsg);
 				receiveFlag = false;
 			}
 		}
