@@ -1,3 +1,3 @@
-unity-NetSample
+unity-net-sample
 ===
 TCPクライアントプログラム
